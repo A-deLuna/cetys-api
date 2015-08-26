@@ -6,49 +6,20 @@ var app = module.exports.app = exports.app = express();
 var cheerio = require('cheerio');
 var request = require('request');
 var cookieParser = require('cookie-parser');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/test');
 
 app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.post('/login', function(req, res){
-  var cookieJar = request.jar();
-  var options = { url: 'http://micampus.mxl.cetys.mx/portal/auth/portal/default/default?loginheight=0', jar: cookieJar};
-  var postForm  = {j_username: req.body.user, j_password: req.body.password};
-  var postOptions = {
-    url: 'http://micampus.mxl.cetys.mx/portal/auth/portal/default/j_security_check',
-    form: postForm , 
-    jar: cookieJar,
-    headers: {
-      'Referer': 'http://micampus.mxl.cetys.mx/portal/auth/portal/default/default?loginheight=0',
-    },
-    followAllRedirects: true
-  };
-  request(options, function (error, response, body) {
-    if (!error && response.statusCode === 200) { 
-      request.post(postOptions, function(err, response, body){
-        var cookies;
-        if(!error && response.statusCode === 200){
-          cookies = cookieJar.getCookieString('http://micampus.mxl.cetys.mx/portal/auth/portal/default/Academico/Consultar+boleta').trim().split(' ');
-          cookies.forEach(function(value){
-            var c = value.split('=');
-            var key = c[0];
-            var value = c[1].slice(0,-1);
-            res.cookie(key, value);
-          });
-          
-          res.send('ok');
-        }
-      });
-    }
-  });
+app.all('/api/*', [require('./helpers/validateRequest')]);
+app.use('/', require('./routes'));
+//app.post('/grades', require('./routes/grades'));
 
-});
-
-app.post('/grades', require('./routes/grades'));
-
-app.post('/schedule', require('./routes/schedule'));
+//app.post('/schedule', require('./routes/schedule'));
 
 var home = [	'<html>',
 		'<head><title>CETYS API</title></head>',
