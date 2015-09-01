@@ -8,7 +8,13 @@ var request = require('request');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect(process.env.MONGOLAB_URI, function (err) {
+  if(err){
+    console.log(err);
+  } else {
+    console.log('mongo connected');
+  }
+});
 
 app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'public')));
