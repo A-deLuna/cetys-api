@@ -47,6 +47,6 @@ app.get('*', function(req, res){
 	res.send('404');
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
 
-console.log('Server started: http://localhost:3000/');
+console.log('Server started: http://localhost:3000/ or at heroku');
