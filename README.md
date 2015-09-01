@@ -37,3 +37,5 @@ Se necesitan :
 - Tests
 - Alguien de tijuana y de ensenada que ayude a hacer modificacones y testear que funcione en su sitio
 
+### Agradecimientos
+Gracias a Jesús López por agregar /schedule y el mensaje de bienvendia.
